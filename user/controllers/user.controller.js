@@ -60,3 +60,24 @@ export const loginUser = async (req, res) => {
     }
 
 }
+
+export const logoutUser = async (req, res) => {
+     try {
+        const token = req.cookies.token;
+        await blacklistTokenModel.create({ token });
+        res.clearCookie('token');
+        res.send({ message: 'User logged out successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+export const getProfile = async (req, res) => {
+    try {
+        res.send(req.user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
