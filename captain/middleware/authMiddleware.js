@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import { userModel } from '../models/user.model.js';
+import { captainModel } from '../models/captain.model.js';
 import { blacklistTokenModel } from '../models/blacklisttoken.model.js';
 
 
-export const userAuth = async (req, res, next) => {
+export const captainAuth = async (req, res, next) => {
     try {
         const token = req.cookies.token || req.headers.authorization.split(' ')[ 1 ];
 
@@ -19,7 +19,7 @@ export const userAuth = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const user = await userModel.findById(decoded.id);
+        const user = await captainModel.findById(decoded.id);
 
         if (!user) {
             return res.status(401).json({ message: 'Unauthorized' });
