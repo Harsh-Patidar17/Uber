@@ -2,6 +2,8 @@ import {captainModel} from '../models/captain.model.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { blacklistTokenModel } from '../models/blacklisttoken.model.js';
+import { subscribeToQueue } from '../service/rabbit.js';
+
 export const registercaptain = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -97,3 +99,10 @@ export const toggleAvailability = async (req, res) => {
     }
 }
 
+
+export const initCaptainQueue = () => {
+    subscribeToQueue("new-ride", (data) => {
+        const rideData = JSON.parse(data);
+        console.log(" [Captain Service] Received new ride event from RabbitMQ:", rideData);
+    });
+}

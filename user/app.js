@@ -1,13 +1,15 @@
+import dotenv from 'dotenv'
+dotenv.config();
 import express from 'express';
 import userRoutes from './routes/user.routes.js';
 import connectDB from './config/db.js';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv'
+import { connectR } from './service/rabbit.js';
 
-dotenv.config();
 const app = express();
 
 connectDB();
+connectR();
 
 app.use(cookieParser());
 app.use(express.json());

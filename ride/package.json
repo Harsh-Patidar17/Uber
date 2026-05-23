@@ -1,5 +1,5 @@
 {
-  "name": "user",
+  "name": "ride",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -8,11 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "type": "module",
+  "license": "ISC",
   "dependencies": {
     "amqplib": "^2.0.1",
-    "bcryptjs": "^3.0.3",
+    "axios": "^1.16.1",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",

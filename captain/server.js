@@ -1,9 +1,20 @@
-import http from 'http';
 import app from './app.js';
 
-const server = http.createServer(app);
+import connect from './config/db.js';
 
+import { connectR } from './service/rabbit.js';
+import { initCaptainQueue } from './controllers/captain.controller.js';
 
-server.listen(3002, () => {
-  console.log('Captain service is running on port 3002');
+const PORT = 3002;
+
+app.listen(PORT, async () => {
+
+    console.log(
+        `Captain service running on port ${PORT}`
+    );
+
+    
+
+    await connectR();
+    initCaptainQueue();
 });
