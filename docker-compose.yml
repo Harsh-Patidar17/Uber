@@ -23,6 +23,22 @@ services:
     depends_on:
       - mongo
 
+  ride-service:
+    build: ./ride
+    container_name: ride-service
+    ports:
+        - "3003:3003"
+    depends_on:
+        - mongo
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - captain-service
+      - ride-service
 volumes:
   mongo-data:
     

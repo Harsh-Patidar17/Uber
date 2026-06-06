@@ -11,6 +11,13 @@ app.get('/', (req, res) => {
     res.send('User service is up and running smoothly!');
 });
 
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        service: 'user-service',
+        status: 'healthy'
+    });
+});
+
 app.use('/', userRoutes);
 
 export default app;

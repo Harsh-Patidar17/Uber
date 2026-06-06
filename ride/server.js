@@ -1,9 +1,39 @@
 import { createServer } from 'http';
+
 import app from './app.js';
 
-const server = createServer(app);
+import connect from './config/db.js';
 
+import { connectR } from './service/rabbit.js';
 
-server.listen(3003, () => {
-    console.log('ride service is running on port 3003');
-})
+const PORT = process.env.PORT || 3003;
+
+const startServer = async () => {
+
+    try {
+
+        await connect();
+
+        await connectR();
+
+        const server = createServer(app);
+
+        server.listen(PORT, () => {
+            console.log(
+                `Ride service is running on port ${PORT}`
+            );
+        });
+
+    } catch (error) {
+
+        console.error(
+            'Ride Service Startup Failed:',
+            error
+        );
+
+        process.exit(1);
+    }
+
+};
+
+startServer();

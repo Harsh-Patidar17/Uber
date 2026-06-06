@@ -6,15 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import rideRoutes from './routes/ride.routes.js';
 
-import connect from './config/db.js';
-
-import { connectR } from './service/rabbit.js';
-
 const app = express();
-
-connect();
-
-connectR();
 
 app.use(express.json());
 
@@ -23,6 +15,13 @@ app.use(express.urlencoded({
 }));
 
 app.use(cookieParser());
+
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        service: 'ride-service',
+        status: 'healthy'
+    });
+});
 
 app.use('/', rideRoutes);
 
