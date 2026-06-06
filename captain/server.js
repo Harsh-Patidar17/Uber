@@ -1,20 +1,36 @@
 import app from './app.js';
 
-import connect from './config/db.js';
-
+import connectDB from './config/db.js';
 import { connectR } from './service/rabbit.js';
+
 import { initCaptainQueue } from './controllers/captain.controller.js';
 
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 
-app.listen(PORT, async () => {
+const startServer = async () => {
+    try {
 
-    console.log(
-        `Captain service running on port ${PORT}`
-    );
+        await connectDB();
 
-    
+        await connectR();
 
-    await connectR();
-    initCaptainQueue();
-});
+        await initCaptainQueue();
+
+        app.listen(PORT, () => {
+            console.log(
+                `Captain service running on port ${PORT}`
+            );
+        });
+
+    } catch (error) {
+
+        console.error(
+            'Captain Service Startup Failed:',
+            error
+        );
+
+        process.exit(1);
+    }
+};
+
+startServer();

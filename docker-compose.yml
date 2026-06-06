@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  user-service:
+    build: ./user
+    container_name: user-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+
+  captain-service:
+    build: ./captain
+    container_name: captain-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo-data:
+    
