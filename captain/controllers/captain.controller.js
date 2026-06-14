@@ -2,7 +2,7 @@ import {captainModel} from '../models/captain.model.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { blacklistTokenModel } from '../models/blacklisttoken.model.js';
-import { subscribeToQueue } from '../service/rabbit.js';
+import { subscribeToQueue, publishToQueue } from '../service/rabbit.js';
 
 export const registercaptain = async (req, res) => {
     try {
@@ -99,10 +99,48 @@ export const toggleAvailability = async (req, res) => {
     }
 }
 
-
 export const initCaptainQueue = () => {
-    subscribeToQueue("new-ride", (data) => {
+
+    subscribeToQueue("new-ride", async (data) => {
+
         const rideData = JSON.parse(data);
-        console.log(" [Captain Service] Received new ride event from RabbitMQ:", rideData);
+
+        console.log(
+            "[Captain Service] Received new ride:",
+            rideData
+        );
+
+        const captain = await captainModel.findOne({
+            isAvailable: true
+        });
+
+        console.log("Available Captain:", captain);
+        if (!captain) {
+            console.log(
+                "[Captain Service] No available captain found"
+            );
+            return;
+        }
+
+        const assignmentData = {
+            rideId: rideData._id,
+            captainId: captain._id
+        };
+
+        console.log(
+            "[Captain Service] Assignment Data:",
+            assignmentData
+        );
+        await publishToQueue(
+            "captain-assigned",
+            JSON.stringify(assignmentData)
+        );
+        console.log(
+            "Assigned Captain ID:",
+            captain._id
+        );
+        captain.isAvailable = false;
+        await captain.save();
     });
-}
+    
+};

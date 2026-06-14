@@ -1,10 +1,8 @@
 import { createServer } from 'http';
-
 import app from './app.js';
-
 import connect from './config/db.js';
-
 import { connectR } from './service/rabbit.js';
+import { initRideQueue } from './controller/ride.queue.controller.js';
 
 const PORT = process.env.PORT || 3003;
 
@@ -15,6 +13,8 @@ const startServer = async () => {
         await connect();
 
         await connectR();
+
+        initRideQueue();
 
         const server = createServer(app);
 
